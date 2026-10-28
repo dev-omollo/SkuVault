@@ -1,58 +1,82 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SkuVault - Inventory Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A robust, modern full-stack Inventory Management System engineered with Laravel. SkuVault provides secure, data-driven supply chain tracking, automated warehouse workflows, and item life-cycle management from initial acquisition to customer delivery.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 👥 Role-Based Access Control (RBAC)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+SkuVault enforces strict structural permissions using three primary user roles:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Role | Core Permissions | System Access |
+| :--- | :--- | :--- |
+| **System Admin** | Full access to user management, database backups, logs, configuration settings, and structural variables. | Entire System |
+| **Warehouse Manager** | Stock level adjustments, supplier tracking, generating reports, inventory audits, and low-stock threshold triggers. | Inventory & Reporting Modules |
+| **Staff Picker/Packer** | Viewing item lists, staging incoming orders, logging picking updates, updating delivery statuses, and scanning assets. | Order Fulfillment Operations |
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🔌 Core REST API Endpoints
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+All data transactions interact seamlessly via secure JSON requests utilizing Laravel Sanctum tokens:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Inventory Management
+* **`GET /api/v1/inventory`** - Retrieve a paginated list of all active stock profiles.
+* **`POST /api/v1/inventory`** - Create a new item entry (Requires Manager/Admin privileges).
+* **`PUT /api/v1/inventory/{id}`** - Update specific item metrics, quantities, or warehouse locations.
+* **`DELETE /api/v1/inventory/{id}`** - Archive an active inventory stock line profile.
 
-## Agentic Development
+### Authentication
+* **`POST /api/v1/auth/login`** - Authenticate user credentials and return a secure Bearer token.
+* **`POST /api/v1/auth/logout`** - Invalidate active session tokens.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
 
+## 🛠️ Local Development & Installation (Laragon)
+
+Follow these steps to set up SkuVault inside your local Laragon development stack:
+
+### 1. Project Placement
+Clone or move your project directory into your main Laragon virtual directory:
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+cd C:\laragon\www\SkuVault
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### 2. Configure Environment Files
+Duplicate the default example environment profile:
+```bash
+cp .env.example .env
+```
+Open your newly created `.env` file and update your database connections to match Laragon's default Mysql instance:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=skuvault
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Contributing
+### 3. Install Package Dependencies
+Run the standard dependency download scripts via Composer and Node Package Manager:
+```bash
+composer install
+npm install && npm run build
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Key Generation & Database Setup
+Generate a unique application storage encryption key and execute the database migration tracking tables:
+```bash
+php artisan key:generate
+php artisan migrate --seed
+```
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🧪 Running Automated Tests
 
-## Security Vulnerabilities
+SkuVault features pre-configured unit and behavioral feature testing frameworks. Run the command below inside your terminal to execute your code test suites:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan test
+```
